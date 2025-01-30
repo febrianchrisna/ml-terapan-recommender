@@ -19,31 +19,41 @@ Referensi:
 
 ## Business Understanding
 
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
+2.1 Problem Statements
+Berdasarkan overview proyek yang telah dijelaskan, berikut adalah beberapa pernyataan masalah yang akan diselesaikan:
 
-Bagian laporan ini mencakup:
+Bagaimana merancang sistem rekomendasi game yang dapat membantu pengguna menemukan game yang sesuai dengan preferensi mereka di tengah banyaknya pilihan game yang tersedia?
+Fitur apa saja yang paling relevan untuk digunakan dalam sistem rekomendasi berbasis konten (content-based filtering) agar dapat memberikan rekomendasi yang akurat dan personal?
+Metode apa yang paling tepat untuk mengukur kesamaan (similarity) antar game sehingga rekomendasi yang diberikan sesuai dengan minat pengguna?
 
-### Problem Statements
+2.2 Goals
+Untuk menjawab pernyataan masalah di atas, proyek ini memiliki tujuan sebagai berikut:
 
-Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+Mengembangkan sistem rekomendasi game berbasis konten yang dapat membantu pengguna menemukan game baru yang sesuai dengan preferensi mereka.
+Mengidentifikasi fitur-fitur game yang paling relevan untuk digunakan dalam proses pemberian rekomendasi agar akurasi dan personalisasi rekomendasi dapat ditingkatkan.
+Mengevaluasi dan menentukan metode pengukuran kesamaan (similarity) antar game yang paling efektif untuk sistem rekomendasi berbasis konten.
 
-### Goals
+2.3 Solution Approach
+Untuk mencapai tujuan-tujuan di atas, proyek ini akan menerapkan pendekatan sebagai berikut:
 
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+Data Preparation:
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+Melakukan preprocessing dan pembersihan data game, seperti menangani missing values, mengkonversi tipe data, dan melakukan feature engineering.
+Mengeksplorasi dan memilih fitur-fitur game yang paling relevan untuk digunakan dalam sistem rekomendasi.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
 
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+Pengembangan Sistem Rekomendasi:
+
+Menerapkan algoritma content-based filtering untuk memberikan rekomendasi game berdasarkan kesamaan konten.
+Membandingkan beberapa metode pengukuran kesamaan (similarity), seperti cosine similarity, Pearson correlation, dan Euclidean distance, untuk menentukan yang paling efektif.
+Mengoptimalkan parameter algoritma rekomendasi untuk meningkatkan akurasi dan personalisasi rekomendasi.
+
+
+Evaluasi Sistem:
+
+Menguji dan mengevaluasi kinerja sistem rekomendasi menggunakan metrik-metrik yang sesuai, seperti precision, recall, dan normalized discounted cumulative gain (NDCG).
+Menganalisis hasil evaluasi untuk mengidentifikasi area perbaikan dan melakukan iterasi pengembangan sistem.
+
 
 ## Data Understanding
 Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
