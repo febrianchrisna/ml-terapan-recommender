@@ -136,29 +136,166 @@ Insight:
 - Skor yang lebih rendah, seperti 6.0 ke bawah, jarang muncul dalam dataset, yang menunjukkan bahwa sangat sedikit game yang mendapat penilaian buruk oleh pengguna.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+### Kesalahan Tipe Data
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+![Make](assets/make.png)
+
+Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan. Agar data lebih konsisten dan siap untuk analisis, "tbd" akan diganti dengan nilai 0.
+
+### Missing Value
+
+![Make](assets/make.png)
+
+Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom tersebut adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
+
+### Duplikasi Data
+
+![Make](assets/make.png)
+
+Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. Untuk mengatasi masalah ini,  dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
+
+### Feature Engineering
+
+Pada tahap Feature Engineering, kolom-kolom yang relevan dipilih untuk digunakan dalam sistem rekomendasi game. Kolom yang dipilih terdiri dari game_id, yang merupakan ID unik untuk setiap game, title, yang berisi judul game, dan genre(s), yang mencakup genre atau jenis game yang relevan, di mana setiap game bisa memiliki lebih dari satu genre. Dengan memilih kolom-kolom ini, dataset menjadi lebih fokus pada elemen-elemen utama yang diperlukan untuk menghasilkan rekomendasi yang akurat, terutama berdasarkan genre yang menjadi faktor penting dalam menentukan kesamaan antar game.
+
+![Make](assets/make.png)
+
+Lalu  dilakukan pembersihan dan standarisasi genre dalam kolom genre(s) untuk memastikan konsistensi format. Proses ini penting karena dalam TF-IDF Vectorization, tanda hubung dan spasi dapat memisahkan kata-kata, yang akan mempengaruhi pemrosesan dan perhitungan kesamaan antar game. Oleh karena itu, genre yang memiliki format berbeda atau penulisan yang tidak konsisten, seperti "Sci-Fi" menjadi "scifi dan "Open-World" menjadi "openworld", disesuaikan agar memiliki format yang lebih seragam
+
+![Make](assets/make.png)
+
+Alasan untuk mengubah kolom game_id, game_title, dan game_genre menjadi list adalah untuk memudahkan pemrosesan data menggunakan TfidfVectorizer dari scikit-learn. Dalam konteks ini, TfidfVectorizer membutuhkan input dalam bentuk list string, di mana setiap string mewakili genre anime atau game secara individual
+
+```python
+game_id = rec_game['game_id'].tolist()
+
+game_title = rec_game['title'].tolist()
+
+game_genre = rec_game['genre(s)'].tolist()
+```
+
+### One Hot Encoding
+
+One Hot Encoding digunakan untuk mengubah data kategori, seperti genre game, menjadi format numerik yang dapat diproses oleh model machine learning. Setiap genre yang ada dalam kolom genre(s) akan diubah menjadi kolom terpisah, dengan nilai 1 jika genre tersebut ada pada game tersebut, dan 0 jika tidak ada. Proses ini penting karena model machine learning memerlukan data numerik dan mencegah model salah menginterpretasi hubungan antara kategori. Dengan One Hot Encoding, data genre menjadi lebih jelas dan siap untuk analisis lebih lanjut
+
+```python
+genre_list = []
+
+# Membuat daftar genre unik
+for index in game_new.index:
+    temp = game_new['genre'][index].split(',')
+    for i in temp:
+        if i not in genre_list:
+            genre_list.append(i)
+
+onehot_df = pd.DataFrame(0, index=game_new.index, columns=genre_list)
+
+# Mengisi nilai 1 untuk genre yang sesuai
+for index in game_new.index:
+    temp = game_new['genre'][index].split(',')
+    for i in temp:
+        onehot_df.loc[index, i] = 1
+
+game_new = pd.concat([game_new, onehot_df], axis=1).fillna(0)
+game_new.head()
+```
+
+### TF-IDF Vectorizer
+
+TF-IDF Vectorizer digunakan untuk mengubah teks (seperti genre game) menjadi representasi numerik yang dapat diproses oleh model machine learning. Teknik ini menghitung dua hal: Term Frequency (TF), yang mengukur seberapa sering genre muncul dalam sebuah game, dan Inverse Document Frequency (IDF), yang mengukur seberapa penting genre tersebut dalam keseluruhan dataset. Dengan menggunakan TF-IDF, genre yang lebih jarang muncul mendapat bobot lebih tinggi, sementara genre yang sering muncul diberi bobot rendah.
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Inisialisasi TfidfVectorizer
+tf = TfidfVectorizer()
+
+# Melakukan perhitungan idf pada data genre
+tf.fit(game_new['genre'])
+
+# Mapping array dari fitur index integer ke fitur nama
+tf.get_feature_names_out()
+```
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+### Cosine Similarity
+Dalam model ini, Cosine Similarity digunakan untuk mengukur seberapa mirip genre antar game berdasarkan matriks TF-IDF. Dengan menghitung kesamaan antar game, sistem dapat merekomendasikan game yang lebih mirip dengan preferensi pengguna berdasarkan genre yang mereka pilih. Game dengan nilai similarity tinggi (mendekati 1) akan lebih relevan untuk direkomendasikan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+```python
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Menghitung cosine similarity pada matrix tf-idf
+cosine_sim = cosine_similarity(tfidf_matrix)
+cosine_sim
+```
+
+Rumus:
+
+- A⋅B adalah hasil perkalian dot antara dua vektor.
+- |A| dan |B| adalah panjang (norm) dari vektor A dan B
+
+Kelebihan:
+- Tidak dipengaruhi oleh panjang vektor, sehingga cocok untuk data sparse seperti teks.
+- Mudah dipahami dan diimplementasikan.
+- Efektif untuk mengukur kesamaan antar dokumen atau genre dalam sistem rekomendasi.
+  
+Kekurangan:
+- Tidak mempertimbangkan urutan kata dalam teks, hanya kesamaan arah vektor.
+- Mungkin tidak optimal untuk data yang sangat mirip tetapi memiliki perbedaan kecil pada beberapa elemen.
+
+#### Hasil Rekomendasi Cosine Similarity
+
+![Make](assets/make.png)
+
+### Euclidean Distance
+Pada model ini, Euclidean Distance digunakan untuk mengukur jarak antara game berdasarkan genre yang direpresentasikan oleh TF-IDF. Jarak yang lebih kecil menunjukkan kesamaan yang lebih besar antara dua game, dan ini dapat digunakan untuk menemukan game yang serupa. Semakin kecil nilai Euclidean Distance, semakin mirip game tersebut, yang berguna untuk sistem rekomendasi.
+
+```python
+from sklearn.metrics.pairwise import euclidean_distances
+
+euclidean_sim = euclidean_distances(tfidf_matrix)
+euclidean_sim
+
+euclidean_sim_df = pd.DataFrame(euclidean_sim, index=game_new['title'], columns=game_new['title'])
+print('Shape:', euclidean_sim_df.shape)
+
+euclidean_sim_df.sample(5, axis=1).sample(10, axis=0)
+```
+
+Euclidean Distance mengukur jarak antara dua titik dalam ruang vektor. Rumus untuk menghitung jarak Euclidean antara dua vektor A dan B adalah:
+
+![Make](assets/make.png)
+
+Di mana Ai dan Bi adalah komponen-komponen dari vektor A dan B dan n adalah jumlah dimensi vektor tersebut. Nilai Euclidean Distance semakin kecil, semakin mirip dua vektor tersebut.
+
+Kelebihan:
+- Mudah dipahami dan intuitif karena mengukur jarak dalam ruang geometris.
+- Efektif digunakan pada data yang tidak terlalu sparse dan ketika urutan fitur memiliki pengaruh.
+Kekurangan:
+- Sensitif terhadap skala data, sehingga fitur yang memiliki skala lebih besar bisa mendominasi hasil perhitungan.
+- Tidak mempertimbangkan korelasi antar fitur atau dimensi.
+
+#### Hasil Rekomendasi Euclidean Distance
+
+![Make](assets/make.png)
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+Pada proyek ini, Precision at k (P@k) digunakan sebagai metrik evaluasi untuk mengukur kinerja sistem rekomendasi berbasis Content-Based Filtering. Precision adalah ukuran seberapa banyak rekomendasi yang relevan ada di antara k rekomendasi teratas yang diberikan oleh sistem.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Rumus Precision at k (P@k):
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+![Make](assets/make.png)
 
-**---Ini adalah bagian akhir laporan---**
+- Jumlah rekomendasi relevan dalam k teratas adalah jumlah item yang relevan dan ditemukan di dalam k rekomendasi teratas.
+- k adalah jumlah rekomendasi teratas yang ingin dievaluasi (dalam hal ini, k = 10).
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+Precision mengukur seberapa banyak rekomendasi yang relevan di antara k rekomendasi teratas. Semakin tinggi nilai Precision, semakin baik kualitas rekomendasi yang diberikan oleh sistem, karena semakin banyak rekomendasi yang sesuai dengan preferensi pengguna.
+
+Dalam proyek ini, dua metode Cosine Similarity dan Euclidean Distance digunakan untuk menghasilkan rekomendasi. Kedua metode ini menghasilkan daftar game yang dianggap relevan untuk pengguna, dan nilai Precision digunakan untuk mengukur seberapa banyak game relevan yang ditemukan dalam 10 rekomendasi teratas.
+
+![Make](assets/make.png)
+
+Hasil ini menunjukkan bahwa semua rekomendasi yang diberikan oleh kedua metode adalah relevan dan termasuk dalam 10 rekomendasi teratas. Dengan kata lain, kedua model berhasil memberikan hanya rekomendasi yang relevan dalam daftar rekomendasi teratas mereka.
+
+## Kesimpulan
+Sistem rekomendasi ini berhasil mencapai hasil yang sangat baik dengan memberikan rekomendasi yang relevan dan sesuai dengan harapan pengguna. Kedua metode, Cosine Similarity dan Euclidean Distance, memberikan hasil yang serupa dalam hal precision, menunjukkan bahwa keduanya efektif dalam mengukur kesamaan antar game berdasarkan genre. Dengan menggunakan pendekatan Content-Based Filtering, sistem ini dapat memberikan rekomendasi yang dapat dijelaskan, yang berdasarkan pada kesamaan genre, tanpa bergantung pada data pengguna lain. Hal ini menjadikannya solusi yang tepat untuk membantu pemain menemukan game baru yang sesuai dengan preferensi mereka dalam pasar game yang semakin berkembang
