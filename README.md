@@ -103,6 +103,7 @@ Game developer:
 ![Developer](assets/dev.png)
 
 Insight:
+
 - Ubisoft mendominasi dengan jumlah game terbanyak, lebih dari 600 game. Ini menunjukkan bahwa Ubisoft adalah salah satu pengembang terbesar dan paling produktif dalam industri game.
 - Electronic Arts (EA) dan Activision mengikuti dengan jumlah game yang signifikan, yang mencerminkan peran besar mereka dalam merilis game-game populer di berbagai platform.
 - SCEI (Sony Computer Entertainment America) juga menunjukkan kontribusi besar dalam industri game, mencerminkan popularitas konsol PlayStation dan game eksklusif yang mereka kembangkan.
