@@ -247,6 +247,10 @@ Kekurangan:
 
 ![Make](assets/make.png)
 
+Berikut adalah hasil game yang direkomendasikan untuk game Sleeping Dogs
+
+![Make](assets/make.png)
+
 ### Euclidean Distance
 Pada model ini, Euclidean Distance digunakan untuk mengukur jarak antara game berdasarkan genre yang direpresentasikan oleh TF-IDF. Jarak yang lebih kecil menunjukkan kesamaan yang lebih besar antara dua game, dan ini dapat digunakan untuk menemukan game yang serupa. Semakin kecil nilai Euclidean Distance, semakin mirip game tersebut, yang berguna untuk sistem rekomendasi.
 
@@ -276,6 +280,10 @@ Kekurangan:
 - Tidak mempertimbangkan korelasi antar fitur atau dimensi.
 
 #### Hasil Rekomendasi Euclidean Distance
+
+![Make](assets/make.png)
+
+Berikut adalah hasil game yang direkomendasikan untuk game Call of Duty
 
 ![Make](assets/make.png)
 
