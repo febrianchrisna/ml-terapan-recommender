@@ -57,13 +57,12 @@ Deskripsi Variabel:
 | rating            | Rating konten game (kategorikal)              |
 
 
-
 ## Exploratory Data Analysis
 
 ### Univariate Analysis
 Platform:
 
-![Make](assets/make.png)
+![Platform](assets/platform.png)
 
 Insight:
 
@@ -77,7 +76,7 @@ Insight:
 
 Rating konten:
 
-![Make](assets/make.png)
+![Content](assets/rating.png)
 
 Insight:
 
@@ -88,7 +87,7 @@ Insight:
 
 Genre:
 
-![Make](assets/make.png)
+![Genre](assets/genre.png)
 
 Insight:
 
@@ -101,7 +100,7 @@ Insight:
 
 Game developer:
 
-![Make](assets/make.png)
+![Developer](assets/dev.png)
 
 Insight:
 - Ubisoft mendominasi dengan jumlah game terbanyak, lebih dari 600 game. Ini menunjukkan bahwa Ubisoft adalah salah satu pengembang terbesar dan paling produktif dalam industri game.
@@ -112,7 +111,7 @@ Insight:
 
 Critic score:
 
-![Make](assets/make.png)
+![Critic](assets/critic.png)
 
 Insight:
 
@@ -124,9 +123,9 @@ Insight:
 
 User score:
 
-![Make](assets/make.png)
+![Score](assets/uscore.png)
 
-![Make](assets/make.png)
+![Score Count](assets/uscore2.png)
 
 Insight:
 
@@ -138,19 +137,19 @@ Insight:
 ## Data Preparation
 ### Kesalahan Tipe Data
 
-![Make](assets/make.png)
+![Tipe Data](assets/tipedata.png)
 
 Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan. Agar data lebih konsisten dan siap untuk analisis, "tbd" akan diganti dengan nilai 0.
 
 ### Missing Value
 
-![Make](assets/make.png)
+![Missing Value](assets/missingval.png)
 
 Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom tersebut adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
 
 ### Duplikasi Data
 
-![Make](assets/make.png)
+![Duplicate](assets/duplicate.png)
 
 Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. Untuk mengatasi masalah ini,  dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
 
@@ -158,11 +157,11 @@ Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pad
 
 Pada tahap Feature Engineering, kolom-kolom yang relevan dipilih untuk digunakan dalam sistem rekomendasi game. Kolom yang dipilih terdiri dari game_id, yang merupakan ID unik untuk setiap game, title, yang berisi judul game, dan genre(s), yang mencakup genre atau jenis game yang relevan, di mana setiap game bisa memiliki lebih dari satu genre. Dengan memilih kolom-kolom ini, dataset menjadi lebih fokus pada elemen-elemen utama yang diperlukan untuk menghasilkan rekomendasi yang akurat, terutama berdasarkan genre yang menjadi faktor penting dalam menentukan kesamaan antar game.
 
-![Make](assets/make.png)
+![Feature Engineering](assets/feature.png)
 
 Lalu  dilakukan pembersihan dan standarisasi genre dalam kolom genre(s) untuk memastikan konsistensi format. Proses ini penting karena dalam TF-IDF Vectorization, tanda hubung dan spasi dapat memisahkan kata-kata, yang akan mempengaruhi pemrosesan dan perhitungan kesamaan antar game. Oleh karena itu, genre yang memiliki format berbeda atau penulisan yang tidak konsisten, seperti "Sci-Fi" menjadi "scifi dan "Open-World" menjadi "openworld", disesuaikan agar memiliki format yang lebih seragam
 
-![Make](assets/make.png)
+![Standarisasi](assets/scifi.png)
 
 Alasan untuk mengubah kolom game_id, game_title, dan game_genre menjadi list adalah untuk memudahkan pemrosesan data menggunakan TfidfVectorizer dari scikit-learn. Dalam konteks ini, TfidfVectorizer membutuhkan input dalam bentuk list string, di mana setiap string mewakili genre anime atau game secara individual
 
@@ -231,6 +230,8 @@ cosine_sim
 
 Rumus:
 
+![Rumus Cosine](assets/rumus_cos.png)
+
 - A⋅B adalah hasil perkalian dot antara dua vektor.
 - |A| dan |B| adalah panjang (norm) dari vektor A dan B
 
@@ -245,11 +246,11 @@ Kekurangan:
 
 #### Hasil Rekomendasi Cosine Similarity
 
-![Make](assets/make.png)
+![Contoh 1](assets/contoh1.png)
 
 Berikut adalah hasil game yang direkomendasikan untuk game Sleeping Dogs
 
-![Make](assets/make.png)
+![Hasil Cosine](assets/hasil1.png)
 
 ### Euclidean Distance
 Pada model ini, Euclidean Distance digunakan untuk mengukur jarak antara game berdasarkan genre yang direpresentasikan oleh TF-IDF. Jarak yang lebih kecil menunjukkan kesamaan yang lebih besar antara dua game, dan ini dapat digunakan untuk menemukan game yang serupa. Semakin kecil nilai Euclidean Distance, semakin mirip game tersebut, yang berguna untuk sistem rekomendasi.
@@ -268,7 +269,7 @@ euclidean_sim_df.sample(5, axis=1).sample(10, axis=0)
 
 Euclidean Distance mengukur jarak antara dua titik dalam ruang vektor. Rumus untuk menghitung jarak Euclidean antara dua vektor A dan B adalah:
 
-![Make](assets/make.png)
+![Rumus Euclidean](assets/rumus_eu.png)
 
 Di mana Ai dan Bi adalah komponen-komponen dari vektor A dan B dan n adalah jumlah dimensi vektor tersebut. Nilai Euclidean Distance semakin kecil, semakin mirip dua vektor tersebut.
 
@@ -281,18 +282,18 @@ Kekurangan:
 
 #### Hasil Rekomendasi Euclidean Distance
 
-![Make](assets/make.png)
+![Contoh 2](assets/contoh2.png)
 
 Berikut adalah hasil game yang direkomendasikan untuk game Call of Duty
 
-![Make](assets/make.png)
+![Hasil Euclidean](assets/hasil2.png)
 
 ## Evaluation
 Pada proyek ini, Precision at k (P@k) digunakan sebagai metrik evaluasi untuk mengukur kinerja sistem rekomendasi berbasis Content-Based Filtering. Precision adalah ukuran seberapa banyak rekomendasi yang relevan ada di antara k rekomendasi teratas yang diberikan oleh sistem.
 
 Rumus Precision at k (P@k):
 
-![Make](assets/make.png)
+![Rumus Precision](assets/rumus_pre.png)
 
 - Jumlah rekomendasi relevan dalam k teratas adalah jumlah item yang relevan dan ditemukan di dalam k rekomendasi teratas.
 - k adalah jumlah rekomendasi teratas yang ingin dievaluasi (dalam hal ini, k = 10).
@@ -301,7 +302,7 @@ Precision mengukur seberapa banyak rekomendasi yang relevan di antara k rekomend
 
 Dalam proyek ini, dua metode Cosine Similarity dan Euclidean Distance digunakan untuk menghasilkan rekomendasi. Kedua metode ini menghasilkan daftar game yang dianggap relevan untuk pengguna, dan nilai Precision digunakan untuk mengukur seberapa banyak game relevan yang ditemukan dalam 10 rekomendasi teratas.
 
-![Make](assets/make.png)
+![Precision](assets/hasil_pre.png)
 
 Hasil ini menunjukkan bahwa semua rekomendasi yang diberikan oleh kedua metode adalah relevan dan termasuk dalam 10 rekomendasi teratas. Dengan kata lain, kedua model berhasil memberikan hanya rekomendasi yang relevan dalam daftar rekomendasi teratas mereka.
 
