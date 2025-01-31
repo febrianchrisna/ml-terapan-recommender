@@ -163,7 +163,7 @@ Lalu  dilakukan pembersihan dan standarisasi genre dalam kolom genre(s) untuk me
 
 ![Standarisasi](assets/scifi.png)
 
-Alasan untuk mengubah kolom game_id, game_title, dan game_genre menjadi list adalah untuk memudahkan pemrosesan data menggunakan TfidfVectorizer dari scikit-learn. Dalam konteks ini, TfidfVectorizer membutuhkan input dalam bentuk list string, di mana setiap string mewakili genre anime atau game secara individual
+Selanjutnya mengubah kolom game_id, game_title, dan game_genre menjadi list untuk memudahkan pemrosesan data menggunakan TfidfVectorizer dari scikit-learn. Dalam konteks ini, TfidfVectorizer membutuhkan input dalam bentuk list string, di mana setiap string mewakili genre anime atau game secara individual
 
 ```python
 game_id = rec_game['game_id'].tolist()
