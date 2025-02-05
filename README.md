@@ -66,19 +66,19 @@ Jumlah Kolom (Columns): 9 kolom data, yang mencakup berbagai atribut terkait ken
 
 ![Score Count](https://github.com/user-attachments/assets/24904cc1-a348-4ee5-9f26-ab76ffe350a1)
 
-Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan. Agar data lebih konsisten dan siap untuk analisis, "tbd" akan diganti dengan nilai 0.
+Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan.
 
 ### Missing Value
 
 ![Missing Value](https://github.com/user-attachments/assets/cef76be5-e7f2-4e48-9912-65d98fce8e8a)
 
-Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom tersebut adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
+Terlihat jumlah nilai yang hilang (missing values) di setiap kolom dalam dataset. Beberapa kolom tidak memiliki nilai yang hilang, seperti game_id, title, release, platform, developer, dan genre(s), yang menunjukkan bahwa seluruh data pada kolom-kolom tersebut lengkap. Namun, pada kolom critic_score, terdapat 7 entri yang tidak memiliki nilai, yang berarti ada sedikit data yang hilang dalam kolom ini. Sedangkan pada kolom user_score, ditemukan 805 entri yang kosong, yang menunjukkan cukup banyak data yang hilang di kolom tersebut. Kolom rating mencatatkan jumlah missing value yang paling banyak, yaitu 2.050 entri, menandakan bahwa hampir sebagian besar data pada kolom ini hilang.
 
 ### Duplikasi Data
 
 ![Duplicate](https://github.com/user-attachments/assets/0b6a8d45-c686-452d-ad40-1f08b284b818)
 
-Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. Untuk mengatasi masalah ini,  dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
+Terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. 
 
 ## Exploratory Data Analysis
 
@@ -159,17 +159,44 @@ Insight:
 - Skor yang lebih rendah, seperti 6.0 ke bawah, jarang muncul dalam dataset, yang menunjukkan bahwa sangat sedikit game yang mendapat penilaian buruk oleh pengguna.
 
 ## Data Preparation
-DI ISI SEK
+### Menangani Kesalahan Tipe Data
+Kolom 'user_score' memiliki tipe data 'object', yang berisi nilai non-numerik seperti 'tbd'. Ketika kolom ini diubah menjadi tipe data numerik menggunakan pd.to_numeric(), entri 'tbd' akan dikonversi menjadi NaN (nilai yang hilang)
 
+```python
+game['user_score'] = pd.to_numeric(game['user_score'], errors='coerce')
 
+print(game['user_score'].dtype)
+```
 
+### Menangani Missing Value
+
+Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom critic_score, user_score, dan rating adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
+
+```python
+nan_critic_score = game[game['critic_score'].isna()]
+nan_critic_score
+
+game.dropna(subset=['critic_score', 'user_score'], inplace=True)
+
+rating = game[game['rating'].isna()]
+rating
+
+game.dropna(subset=['rating'], inplace=True)
+```
+
+### Duplikasi Data
+
+Untuk mengatasi masalah duplikasi data khusunya pada judul game seperti Resident Evil: Revelations, dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
+
+```python
+game = game[~game['title'].duplicated(keep='first')]
+```
 
 ### Feature Engineering
 
 Pada tahap Feature Engineering, kolom-kolom yang relevan dipilih untuk digunakan dalam sistem rekomendasi game. Kolom yang dipilih terdiri dari game_id, yang merupakan ID unik untuk setiap game, title, yang berisi judul game, dan genre(s), yang mencakup genre atau jenis game yang relevan, di mana setiap game bisa memiliki lebih dari satu genre. Dengan memilih kolom-kolom ini, dataset menjadi lebih fokus pada elemen-elemen utama yang diperlukan untuk menghasilkan rekomendasi yang akurat, terutama berdasarkan genre yang menjadi faktor penting dalam menentukan kesamaan antar game.
 
 ![Feature Engineering](https://github.com/user-attachments/assets/c3adba18-8117-4a83-bf62-4a47376060d8)
-
 
 Lalu  dilakukan pembersihan dan standarisasi genre dalam kolom genre(s) untuk memastikan konsistensi format. Proses ini penting karena dalam TF-IDF Vectorization, tanda hubung dan spasi dapat memisahkan kata-kata, yang akan mempengaruhi pemrosesan dan perhitungan kesamaan antar game. Oleh karena itu, genre yang memiliki format berbeda atau penulisan yang tidak konsisten, seperti "Sci-Fi" menjadi "scifi dan "Open-World" menjadi "openworld", disesuaikan agar memiliki format yang lebih seragam
 
