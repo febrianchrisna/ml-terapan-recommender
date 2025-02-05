@@ -56,6 +56,29 @@ Deskripsi Variabel:
 | genre(s)          | Genre atau jenis game (kategorikal)           |
 | rating            | Rating konten game (kategorikal)              |
 
+Jumlah Baris (Entries): 14666 baris data, terdapat 18,647 entri atau record yang tercatat dalam dataset ini.
+
+Jumlah Kolom (Columns): 9 kolom data, yang mencakup berbagai atribut terkait kendaraan yang dicatat dalam dataset.
+
+### Kesalahan Tipe Data
+
+![Tipe Data](https://github.com/user-attachments/assets/85e2d889-da34-4f94-96b8-19d66c1e7987)
+
+![Score Count](https://github.com/user-attachments/assets/24904cc1-a348-4ee5-9f26-ab76ffe350a1)
+
+Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan. Agar data lebih konsisten dan siap untuk analisis, "tbd" akan diganti dengan nilai 0.
+
+### Missing Value
+
+![Missing Value](https://github.com/user-attachments/assets/cef76be5-e7f2-4e48-9912-65d98fce8e8a)
+
+Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom tersebut adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
+
+### Duplikasi Data
+
+![Duplicate](https://github.com/user-attachments/assets/0b6a8d45-c686-452d-ad40-1f08b284b818)
+
+Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. Untuk mengatasi masalah ini,  dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
 
 ## Exploratory Data Analysis
 
@@ -124,9 +147,9 @@ Insight:
 
 User score:
 
-![download (5)](https://github.com/user-attachments/assets/33e3b902-8c73-4a7c-b104-4a1ba85cc09e)
+![Uscore](https://github.com/user-attachments/assets/33e3b902-8c73-4a7c-b104-4a1ba85cc09e)
 
-![Score Count](https://github.com/user-attachments/assets/24904cc1-a348-4ee5-9f26-ab76ffe350a1)
+![Score Count2](https://github.com/user-attachments/assets/24904cc1-a348-4ee5-9f26-ab76ffe350a1)
 
 Insight:
 
@@ -136,23 +159,10 @@ Insight:
 - Skor yang lebih rendah, seperti 6.0 ke bawah, jarang muncul dalam dataset, yang menunjukkan bahwa sangat sedikit game yang mendapat penilaian buruk oleh pengguna.
 
 ## Data Preparation
-### Kesalahan Tipe Data
+DI ISI SEK
 
-![Tipe Data](https://github.com/user-attachments/assets/85e2d889-da34-4f94-96b8-19d66c1e7987)
 
-Terdapat kesalahan pada tipe data di kolom user_score. Meskipun nilai skor seharusnya berupa angka numerik, kolom user_score saat ini bertipe object (string), yang berpotensi menyulitkan dalam analisis dan perhitungan lebih lanjut. Selain itu, pada kolom user_score, terdapat nilai "tbd" (To Be Determined), yang menunjukkan bahwa skor pengguna belum ditentukan. Agar data lebih konsisten dan siap untuk analisis, "tbd" akan diganti dengan nilai 0.
 
-### Missing Value
-
-![Missing Value](https://github.com/user-attachments/assets/cef76be5-e7f2-4e48-9912-65d98fce8e8a)
-
-Karena dataset ini memiliki jumlah sampel yang besar (14.666 entri), missing value dapat diatasi dengan menghapus baris yang mengandung nilai yang hilang tanpa mempengaruhi kualitas analisis secara signifikan. Menghapus baris dengan missing value di kolom-kolom tersebut adalah solusi yang tepat karena penghapusan ini tidak akan mengurangi banyak data dan dataset tetap akan representatif untuk analisis selanjutnya.
-
-### Duplikasi Data
-
-![Duplicate](https://github.com/user-attachments/assets/0b6a8d45-c686-452d-ad40-1f08b284b818)
-
-Berdasarkan informasi yang diberikan, terlihat bahwa terdapat duplikasi data pada kolom title (judul game). Beberapa game muncul lebih dari satu kali, seperti Resident Evil: Revelations yang tercatat 7 kali, Final Fantasy X / X-2 HD Remaster yang tercatat 6 kali, dan lainnya. Hal ini bisa mempengaruhi kualitas rekomendasi yang dihasilkan, karena sistem rekomendasi bisa memberi bobot yang berlebihan pada game yang terduplikasi. Untuk mengatasi masalah ini,  dilakukan drop duplikasi pada kolom title untuk memastikan bahwa setiap game hanya tercatat sekali dalam dataset. Dengan menghapus duplikasi ini, dataset akan lebih konsisten dan relevan, sehingga hasil rekomendasi akan lebih akurat
 
 ### Feature Engineering
 
