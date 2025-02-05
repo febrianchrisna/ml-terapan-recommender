@@ -304,7 +304,7 @@ Precision mengukur seberapa banyak rekomendasi yang relevan di antara k rekomend
 
 Dalam proyek ini, dua metode Cosine Similarity dan Euclidean Distance digunakan untuk menghasilkan rekomendasi. Kedua metode ini menghasilkan daftar game yang dianggap relevan untuk pengguna, dan nilai Precision digunakan untuk mengukur seberapa banyak game relevan yang ditemukan dalam 10 rekomendasi teratas.
 
-![Hasil Precision](https://github.com/user-attachments/assets/98adcb0d-6fb9-4348-af23-d3c91d31756f)
+![Hasil Precision](https://github.com/user-attachments/assets/8f124b1d-1c90-459c-a0cc-66cf37c52b4f)
 
 Hasil ini menunjukkan bahwa semua rekomendasi yang diberikan oleh kedua metode adalah relevan dan termasuk dalam 10 rekomendasi teratas. Dengan kata lain, kedua model berhasil memberikan hanya rekomendasi yang relevan dalam daftar rekomendasi teratas mereka.
 
