@@ -232,7 +232,7 @@ cosine_sim
 
 Rumus:
 
-![Rumus Cosine](assets/rumus_cos.png)
+![rumus_cos](https://github.com/user-attachments/assets/84f4815f-11c9-426e-b52a-88b873b010e6)
 
 - A⋅B adalah hasil perkalian dot antara dua vektor.
 - |A| dan |B| adalah panjang (norm) dari vektor A dan B
@@ -271,7 +271,7 @@ euclidean_sim_df.sample(5, axis=1).sample(10, axis=0)
 
 Euclidean Distance mengukur jarak antara dua titik dalam ruang vektor. Rumus untuk menghitung jarak Euclidean antara dua vektor A dan B adalah:
 
-![Rumus Euclidean](assets/rumus_eu.png)
+![rumus_eu](https://github.com/user-attachments/assets/21c8a978-866d-45c3-bb6c-648c6b09a0bd)
 
 Di mana Ai dan Bi adalah komponen-komponen dari vektor A dan B dan n adalah jumlah dimensi vektor tersebut. Nilai Euclidean Distance semakin kecil, semakin mirip dua vektor tersebut.
 
@@ -295,7 +295,7 @@ Pada proyek ini, Precision at k (P@k) digunakan sebagai metrik evaluasi untuk me
 
 Rumus Precision at k (P@k):
 
-![Rumus Precision](assets/rumus_pre.png)
+![rumus_pre](https://github.com/user-attachments/assets/8a0722e0-ead6-4a16-bf98-bf4e9efafc8a)
 
 - Jumlah rekomendasi relevan dalam k teratas adalah jumlah item yang relevan dan ditemukan di dalam k rekomendasi teratas.
 - k adalah jumlah rekomendasi teratas yang ingin dievaluasi (dalam hal ini, k = 10).
